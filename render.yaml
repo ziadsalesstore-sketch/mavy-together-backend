@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: mavy-together-backend
+    runtime: node
+    # Free plan: sleeps after ~15 min idle, so the first request after a quiet period is slow.
+    # A free uptime pinger (e.g. UptimeRobot hitting /healthz every 5 min) keeps it awake.
+    plan: free
+    region: oregon
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm run docker-start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SHOPIFY_API_KEY
+        sync: false
+      - key: SHOPIFY_API_SECRET
+        sync: false
+      - key: SCOPES
+        value: ""

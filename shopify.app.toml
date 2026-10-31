@@ -1,0 +1,41 @@
+# Run `npm run config:link` once to create/link this app under your Partner org.
+# That command overwrites this file from Shopify's record, so afterwards re-check:
+#  - api_version stays "2025-10" (what the installed SDK supports)
+#  - redirect_urls uses /auth/callback
+#  - the [app_proxy] and compliance webhook blocks below are still present
+# then run `npm run deploy`.
+
+client_id = ""
+name = "mavy-together-backend"
+application_url = "https://mavy-together-backend.onrender.com"
+embedded = true
+
+[webhooks]
+api_version = "2025-10"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = ["customers/data_request"]
+  uri = "/webhooks/gdpr/customers-data-request"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = ["customers/redact"]
+  uri = "/webhooks/gdpr/customers-redact"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = ["shop/redact"]
+  uri = "/webhooks/gdpr/shop-redact"
+
+# Theme calls https://<shop>/apps/together/* (same-origin, Shopify-signed).
+[app_proxy]
+url = "https://mavy-together-backend.onrender.com"
+subpath = "together"
+prefix = "apps"
+
+[access_scopes]
+scopes = ""
+
+[auth]
+redirect_urls = [ "https://mavy-together-backend.onrender.com/auth/callback" ]
+
+[build]
+automatically_update_urls_on_dev = true

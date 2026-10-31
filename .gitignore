@@ -1,0 +1,14 @@
+node_modules/
+build/
+.cache/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.shopify/
+
+# Local dev tunnel binary (downloaded per-machine — see README). Same
+# antivirus-blocks-the-CLI's-own-download workaround as Ordinary Club's
+# backend needed on this machine.
+cloudflared.exe

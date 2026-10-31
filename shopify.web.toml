@@ -1,0 +1,9 @@
+# Registers this Remix app as the CLI's "web process" so `shopify app dev`'s
+# reverse proxy knows where to forward unmatched paths (e.g. /webhooks/*)
+# instead of rejecting them with "Invalid path". Same requirement documented
+# in ordinary-club-backend's README gotcha #1 — carried over here since it's
+# a Shopify CLI requirement, not something specific to that app.
+roles = ["backend", "frontend"]
+
+[commands]
+dev = "npm run dev:vite"

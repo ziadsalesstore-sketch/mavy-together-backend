@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Required by @shopify/shopify-app-session-storage-prisma. Do not rename fields.
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+
+  @@map("sessions")
+}
+
+model Charity {
+  id          String   @id @default(cuid())
+  shop        String
+  name        String
+  description String?
+  category    String?
+  website     String?
+  logoUrl     String?
+  imageUrl    String?
+  imageAlt    String?
+  // Admin-only. Never returned by the public vote route.
+  contact     String?
+  verified    Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cycles CycleCharity[]
+  votes  Vote[]
+
+  @@index([shop])
+}
+
+// status: "draft" | "open" | "closed". A cycle accepts votes only while status is
+// "open" AND now is inside [opensAt, closesAt] (either bound may be empty).
+model VotingCycle {
+  id              String    @id @default(cuid())
+  shop            String
+  title           String
+  status          String    @default("draft")
+  opensAt         DateTime?
+  closesAt        DateTime?
+  winnerCharityId String?
+  winnerNote      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  charities CycleCharity[]
+  votes     Vote[]
+
+  @@index([shop, status])
+}
+
+model CycleCharity {
+  cycleId   String
+  charityId String
+  position  Int         @default(0)
+  cycle     VotingCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  charity   Charity     @relation(fields: [charityId], references: [id], onDelete: Cascade)
+
+  @@id([cycleId, charityId])
+}
+
+model Vote {
+  id                String      @id @default(cuid())
+  cycleId           String
+  charityId         String
+  shopifyCustomerId String
+  createdAt         DateTime    @default(now())
+  cycle             VotingCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  charity           Charity     @relation(fields: [charityId], references: [id], onDelete: Cascade)
+
+  // One vote per customer per cycle, enforced by the database itself.
+  @@unique([cycleId, shopifyCustomerId])
+  @@index([cycleId, charityId])
+}

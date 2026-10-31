@@ -1,0 +1,45 @@
+{
+  "name": "mavy-together-backend",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "dev": "shopify app dev",
+    "dev:vite": "remix vite:dev",
+    "config:link": "shopify app config link",
+    "generate": "shopify app generate",
+    "deploy": "shopify app deploy",
+    "start": "remix-serve ./build/server/index.js",
+    "docker-start": "npm run setup && npm run start",
+    "setup": "prisma generate && prisma migrate deploy",
+    "typecheck": "tsc --noEmit",
+    "prisma": "prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "@remix-run/node": "^2.16.0",
+    "@remix-run/react": "^2.16.0",
+    "@remix-run/serve": "^2.16.0",
+    "@shopify/app-bridge-react": "^4.2.12",
+    "@shopify/polaris": "^13.9.5",
+    "@shopify/shopify-app-remix": "^3.7.0",
+    "@shopify/shopify-app-session-storage-prisma": "^5.1.5",
+    "isbot": "^5.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.16.0",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.14",
+    "prisma": "^5.20.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.4.8",
+    "vite-tsconfig-paths": "^4.3.1"
+  },
+  "engines": {
+    "node": "^18.20 || ^20.10 || >=21.0.0"
+  },
+  "author": "Mavis"
+}
